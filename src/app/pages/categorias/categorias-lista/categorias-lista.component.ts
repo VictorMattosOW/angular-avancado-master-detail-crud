@@ -12,4 +12,7 @@ export class CategoriasListaComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  alert(str: string) {
+    alert(str);
+  }
 }
