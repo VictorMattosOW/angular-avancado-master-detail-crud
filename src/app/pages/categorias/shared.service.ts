@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Categorias } from './shared/categoria.model';
@@ -6,7 +6,7 @@ import { Categorias } from './shared/categoria.model';
 @Injectable({
   providedIn: 'root'
 })
-export class SharedService {
+export class CategoriaService {
 
   private apiPath = "api/categorias";
 
