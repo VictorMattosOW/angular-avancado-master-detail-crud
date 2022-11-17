@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Categorias } from './shared/categoria.model';
+import { Categorias } from './categoria.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,8 +44,8 @@ export class CategoriaService {
     )
   }
 
-  delete(id: number): Observable<any> {
-    const url = `${this.apiPath}/${id}`;
+  delete(categorias: Categorias): Observable<any> {
+    const url = `${this.apiPath}/${categorias.id}`;
 
     return this.http.delete(url).pipe(
       catchError(this.handleError),
