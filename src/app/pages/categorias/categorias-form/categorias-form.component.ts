@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Categorias } from '../shared/categoria.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
-// import toastr from "toastr";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-categorias-form',
@@ -14,7 +14,7 @@ import { switchMap } from 'rxjs';
 export class CategoriasFormComponent implements OnInit, AfterContentChecked {
 
   currentAction: string = '';
-  categoriaForm?: FormGroup;
+  categoriaForm!: FormGroup;
   pageTitle: string = '';
   serverErrorMessage: string[] = [];
   submittingForm = false;
@@ -24,7 +24,8 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
     private categoriaService: CategoriaService,
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -34,11 +35,23 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   ngAfterContentChecked(): void {
-    
+    this.setPageTitle();
   }
 
+  submitForm() {
+    this.submittingForm = true;
+
+    if(this.currentAction === 'new') {
+      this.createCategoria();
+    } else {
+      this.updateCategoria();
+    }
+  }
+
+  // private
+
   private setCurrentAction() {
-    this.route.snapshot.url[0].path === "new" ? this.currentAction = "new" : this.currentAction = "edit";
+    this.route.snapshot.url[0].path === 'new' ? this.currentAction = 'new' : this.currentAction = 'edit';
   }
 
   private biuldCategoriaForm() {
@@ -50,12 +63,59 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   private loadCategoria() {
-    if (this.currentAction === "edit") {
+    if (this.currentAction === 'edit') {
       this.route.paramMap.pipe(
-        switchMap(params => this.categoriaService.getById(+params.get('id')))
-      ).subscribe((categoria: Categorias) => {
-        this.categoria = categoria;
-      })
+        switchMap((params) => this.categoriaService.getById(Number(params.get('id'))))
+      ).subscribe(
+        (categoria: Categorias) => {
+          this.categoria = categoria;
+          this.categoriaForm.patchValue(categoria);
+        },
+        (error) => alert('deu erro no servidor')
+      )
+    }
+  }
+
+  private setPageTitle() {
+    if(this.currentAction === 'new') {
+      this.pageTitle = 'Cadastrio de nova categoria';
+    } else {
+      const categoriaNome = this.categoria.nome || '';
+      this.pageTitle = 'Editando Categoria: ' + categoriaNome;
+    }
+  }
+
+  private createCategoria() {
+    const categoria: Categorias = Object.assign(new Categorias(), this.categoriaForm.value);
+
+    this.categoriaService.create(categoria).subscribe(
+      categoria => this.actionsForSuccess(categoria),
+      error => this.actionsForError(error)
+    )
+  }
+
+  private updateCategoria() {
+    const categoria: Categorias = Object.assign(new Categorias(), this.categoriaForm.value);
+
+    this.categoriaService.update(categoria).subscribe(
+      categoria => this.actionsForSuccess(categoria),
+      error => this.actionsForError(error)
+    );
+  }
+
+  private actionsForSuccess(categoria: Categorias) {
+    this.toastr.success('Solicitação processaada com sucesso!');
+    this.router.navigateByUrl('categorias', {skipLocationChange:true}).then(
+      () => this.router.navigate(['categorias', categoria.id, 'edit'])
+    )
+  }
+
+  private actionsForError(error: any) {
+    this.toastr.error('Ocorreu um erro ao processar a sua solicitação!');
+    this.submittingForm = false;
+
+    if(error.status === 422){
+      this.serverErrorMessage = JSON.parse(error._body).errors;
     }
   }
 }
