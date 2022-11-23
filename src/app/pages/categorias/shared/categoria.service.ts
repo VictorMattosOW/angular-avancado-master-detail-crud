@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Categorias } from './categoria.model';
+import { Categoria } from './categoria.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +12,14 @@ export class CategoriaService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Categorias[]> {
+  getAll(): Observable<Categoria[]> {
     return this.http.get(this.apiPath).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategoriasArray)
     )
   }
 
-  getById(id: number): Observable<Categorias> {
+  getById(id: number): Observable<Categoria> {
     const url = `${this.apiPath}/${id}`;
 
     return this.http.get(url).pipe(
@@ -28,14 +28,14 @@ export class CategoriaService {
     );
   }
 
-  create(categorias: Categorias): Observable<Categorias> {
+  create(categorias: Categoria): Observable<Categoria> {
     return this.http.post(this.apiPath, categorias).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategorias)
     );
   }
 
-  update(categorias: Categorias): Observable<Categorias> {
+  update(categorias: Categoria): Observable<Categoria> {
     const url = `${this.apiPath}/${categorias.id}`;
 
     return this.http.put(url, categorias).pipe(
@@ -44,7 +44,7 @@ export class CategoriaService {
     )
   }
 
-  delete(categorias: Categorias): Observable<any> {
+  delete(categorias: Categoria): Observable<any> {
     const url = `${this.apiPath}/${categorias.id}`;
 
     return this.http.delete(url).pipe(
@@ -55,14 +55,14 @@ export class CategoriaService {
 
   // METODOS PRIVADOS
 
-  private jsonDataToCategoriasArray(jsonData: any[]): Categorias[] {
-    const categorias: Categorias[] = [];
-    jsonData.forEach(element => categorias.push(element as Categorias));
+  private jsonDataToCategoriasArray(jsonData: any[]): Categoria[] {
+    const categorias: Categoria[] = [];
+    jsonData.forEach(element => categorias.push(element as Categoria));
     return categorias;
   }
 
-  private jsonDataToCategorias(jsonData: any): Categorias {
-    return jsonData as Categorias;
+  private jsonDataToCategorias(jsonData: any): Categoria {
+    return jsonData as Categoria;
   }
 
   private handleError(error: any): Observable<any> {

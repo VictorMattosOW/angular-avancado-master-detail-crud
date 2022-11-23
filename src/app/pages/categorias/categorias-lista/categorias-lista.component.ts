@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { Categorias } from './../shared/categoria.model';
+import { Categoria } from './../shared/categoria.model';
 import { Component, OnInit } from '@angular/core';
 import { CategoriaService } from '../shared/categoria.service';
 
@@ -10,20 +9,20 @@ import { CategoriaService } from '../shared/categoria.service';
 })
 export class CategoriasListaComponent implements OnInit {
 
-  categorias: Categorias[] = [];
+  categorias: Categoria[] = [];
 
   constructor(private categoriaService: CategoriaService) { }
 
   ngOnInit(): void {
     this.categoriaService.getAll().subscribe(
-      (categorias: Categorias[]) => {
+      (categorias: Categoria[]) => {
         this.categorias = categorias;
       },
       (error: any) => alert("deu erro")
     );
   }
 
-  excluirCategoria(categoria: Categorias) { 
+  excluirCategoria(categoria: Categoria) { 
     const deveDeletar = confirm("Deseja deletar essa categoria ?");
 
     if(deveDeletar){

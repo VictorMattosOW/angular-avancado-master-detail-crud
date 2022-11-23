@@ -2,7 +2,7 @@ import { Actions } from './../shared/action.model';
 import { CategoriaService } from './../shared/categoria.service';
 import { AfterContentChecked, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Categorias } from '../shared/categoria.model';
+import { Categoria } from '../shared/categoria.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -19,7 +19,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   pageTitle: string = '';
   serverErrorMessage: string[] | undefined;
   submittingForm = false;
-  categoria = new Categorias();
+  categoria = new Categoria();
 
   constructor(
     private categoriaService: CategoriaService,
@@ -68,7 +68,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
       this.route.paramMap.pipe(
         switchMap((params) => this.categoriaService.getById(Number(params.get('id'))))
       ).subscribe(
-        (categoria: Categorias) => {
+        (categoria: Categoria) => {
           this.categoria = categoria;
           this.categoriaForm.patchValue(categoria);
         },
@@ -87,7 +87,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   private createCategoria() {
-    const categoria: Categorias = Object.assign(new Categorias(), this.categoriaForm.value);
+    const categoria: Categoria = Object.assign(new Categoria(), this.categoriaForm.value);
 
     this.categoriaService.create(categoria).subscribe(
       categoria => this.actionsForSuccess(categoria),
@@ -96,7 +96,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   private updateCategoria() {
-    const categoria: Categorias = Object.assign(new Categorias(), this.categoriaForm.value);
+    const categoria: Categoria = Object.assign(new Categoria(), this.categoriaForm.value);
 
     this.categoriaService.update(categoria).subscribe(
       categoria => this.actionsForSuccess(categoria),
@@ -104,7 +104,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
     );
   }
 
-  private actionsForSuccess(categoria: Categorias) {
+  private actionsForSuccess(categoria: Categoria) {
     this.toastr.success('Solicitação processaada com sucesso!');
     this.router.navigateByUrl('categorias', {skipLocationChange:true}).then(
       () => this.router.navigate(['categorias', categoria.id, 'edit'])
