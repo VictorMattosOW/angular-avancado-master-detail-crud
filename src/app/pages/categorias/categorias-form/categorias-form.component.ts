@@ -1,3 +1,4 @@
+import { Actions } from './../shared/action.model';
 import { CategoriaService } from './../shared/categoria.service';
 import { AfterContentChecked, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,7 +17,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   currentAction: string = '';
   categoriaForm!: FormGroup;
   pageTitle: string = '';
-  serverErrorMessage: string[] = [];
+  serverErrorMessage: string[] | undefined;
   submittingForm = false;
   categoria = new Categorias();
 
@@ -51,7 +52,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   // private
 
   private setCurrentAction() {
-    this.route.snapshot.url[0].path === 'new' ? this.currentAction = 'new' : this.currentAction = 'edit';
+    this.route.snapshot.url[0].path === Actions.new ? this.currentAction = Actions.new : this.currentAction = Actions.edit;
   }
 
   private biuldCategoriaForm() {
@@ -63,7 +64,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   private loadCategoria() {
-    if (this.currentAction === 'edit') {
+    if (this.currentAction === Actions.edit) {
       this.route.paramMap.pipe(
         switchMap((params) => this.categoriaService.getById(Number(params.get('id'))))
       ).subscribe(
@@ -77,7 +78,7 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
   }
 
   private setPageTitle() {
-    if(this.currentAction === 'new') {
+    if(this.currentAction === Actions.new) {
       this.pageTitle = 'Cadastrio de nova categoria';
     } else {
       const categoriaNome = this.categoria.nome || '';
@@ -116,6 +117,8 @@ export class CategoriasFormComponent implements OnInit, AfterContentChecked {
 
     if(error.status === 422){
       this.serverErrorMessage = JSON.parse(error._body).errors;
+    } else {
+      this.serverErrorMessage = ['Erro no servidor, tente mais tarde'];
     }
   }
 }
