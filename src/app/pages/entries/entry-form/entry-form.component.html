@@ -13,7 +13,7 @@
         </h1>
     </div>
     <div class="col-md d-flex align-items-center justify-content-end">
-        <a routerLink="/categorias" class="btn btn-light">
+        <a routerLink="/lancamentos" class="btn btn-light">
             < Voltar </a>
     </div>
 </div>
@@ -22,13 +22,26 @@
 
     <div class="card">
         <div class="card-header">
-            Informações sobre a categoria
+            Informações sobre a lancamento
         </div>
 
         <div class="card-body">
-            <div class="input-group">
-                <div class="form-group col-md-4">
-                    <label for="nome">Nome</label>
+
+            <div class="input-group mb-3">
+                <!-- tipo -->
+                <div class="form-group col-md-2 me-3">
+                    <label for="tipo">Tipo</label>
+                    <select name="tipo" id="tipo" formControlName="tipo" class="form-control">
+                        <option value="expense">Despesa</option>
+                        <option value="revenue">Receita</option>
+                    </select>
+                    <div class="text-danger" *ngIf="entryForm.get('tipo')?.invalid && entryForm.get('tipo')?.touched">
+                        <div *ngIf="entryForm.get('tipo')?.errors?.['required']">dado obrigatorio</div>
+                    </div>
+                </div>
+                <!-- nome -->
+                <div class="form-group col-md-4 me-3">
+                    <label for="nome">Lançamento</label>
                     <input type="text" class="form-control" id="nome" formControlName="nome">
                     
                     <div class="text-danger" *ngIf="entryForm.get('nome')?.invalid && entryForm.get('nome')?.touched">
@@ -36,8 +49,69 @@
                         <div *ngIf="entryForm.get('nome')?.errors?.['minlength']">deve ter no minimo 2 caracteres</div>
                     </div>
                 </div>
+                <!-- valor -->
+                <div class="form-group col-md-3 me-3">
+                    <label for="valor">Valor</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">R$</div>
+                        </div>
+                        <input [imask]="imaskConfig" type="text" class="form-control text-end" id="valor" formControlName="valor">
+                    </div>
+                    <div class="text-danger" *ngIf="entryForm.get('valor')?.invalid && entryForm.get('valor')?.touched">
+                        <div *ngIf="entryForm.get('valor')?.errors?.['required']">dado obrigatorio</div>
+                    </div>
+                </div>
+                <!-- data -->
+                <div class="form-group col-md-2">
+                    <label for="nome">Data</label>
+                    <p-calendar
+                        id="data"
+                        formControlName="data"
+                        inputStyleClass="form-control"
+                        dataType="string"
+                        dateFormat="dd/mm/yy"
+                        [locale]="ptBR"
+                        [showButtonBar]="true"
+                    ></p-calendar>
 
-                <div class="form-group col-md-7 ms-3">
+                    <div class="text-danger" *ngIf="entryForm.get('data')?.invalid && entryForm.get('data')?.touched">
+                        <div *ngIf="entryForm.get('data')?.errors?.['required']">dado obrigatorio</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <!-- Pago -->
+                <div class="form-group col-md-2">
+                    <label for="pago">--Pago--</label>
+                    <div class="btn-group" role="group">
+                        <input [checked]="entryForm.get('pago')?.value === true" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                        <label (click)="entryForm.get('pago')?.setValue(true)" class="btn btn-outline-primary" for="btnradio1">Pago</label>
+                      
+                        <input [checked]="entryForm.get('pago')?.value === false" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label (click)="entryForm.get('pago')?.setValue(false)" class="btn btn-outline-primary" for="btnradio2">Pendente</label>
+                      </div>
+
+                    <div class="text-danger" *ngIf="entryForm.get('pago')?.invalid && entryForm.get('pago')?.touched">
+                        <div *ngIf="entryForm.get('pago')?.errors?.['required']">dado obrigatorio</div>
+                    </div>
+                </div>
+
+                <!-- categoriaId -->
+                <div class="form-group col-md-3 me-3">
+                    <label for="categoriaId">Categoria</label>
+                    <select name="categoriaId" id="categoriaId" formControlName="categoriaId" class="form-control">
+                        <option value="1">Categoria 1</option>
+                        <option value="2">Categoria 2</option>
+                    </select>
+                    <div class="text-danger" *ngIf="entryForm.get('categoriaId')?.invalid && entryForm.get('categoriaId')?.touched">
+                        <div *ngIf="entryForm.get('categoriaId')?.errors?.['required']">dado obrigatorio</div>
+                    </div>
+                </div>
+
+                <!-- descricao -->
+                <div class="form-group col-md-6">
                     <label for="descricao">Descrição</label>
                     <input type="text" class="form-control" id="descricao" formControlName="descricao">
                 </div>
