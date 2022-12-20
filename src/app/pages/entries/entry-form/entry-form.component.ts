@@ -1,3 +1,5 @@
+import { CategoriaService } from './../../categorias/shared/categoria.service';
+import { Categoria } from './../../categorias/shared/categoria.model';
 import { Actions } from './../../categorias/shared/action.model';
 import { AfterContentChecked, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,6 +22,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   serverErrorMessage: string[] | undefined;
   submittingForm = false;
   entries = new Entry();
+  categories: Array<Categoria> = [];
 
   imaskConfig = {
     mask: Number,
@@ -36,7 +39,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
     dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
     monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abrir', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-    'Outubro', 'Novembro', 'Dezembro'],
+      'Outubro', 'Novembro', 'Dezembro'],
     monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
     today: 'Hoje',
     clear: 'Limpar'
@@ -47,13 +50,15 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private categoriesService: CategoriaService
   ) { }
 
   ngOnInit(): void {
     this.setCurrentAction();
     this.biuldEntryForm();
     this.loadEntry();
+    this.loadCategories();
   }
 
   ngAfterContentChecked(): void {
@@ -63,11 +68,22 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   submitForm() {
     this.submittingForm = true;
 
-    if(this.currentAction === 'new') {
+    if (this.currentAction === 'new') {
       this.createEntry();
     } else {
       this.updateEntry();
     }
+  }
+
+  get typesOptions(): Array<any> {
+    return Object.entries(Entry.types).map(
+      ([value, text]) => {
+        return {
+          text: text,
+          value: value
+        }
+      }
+    )
   }
 
   // private
@@ -81,10 +97,10 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(2)]],
       descricao: [null],
-      tipo: [null, [Validators.required]],
+      tipo: ['expense', [Validators.required]],
       valor: [null, [Validators.required]],
       data: [null, [Validators.required]],
-      pago: [null, [Validators.required]],
+      pago: [true, [Validators.required]],
       categoriaId: [null, [Validators.required]],
     })
   }
@@ -103,8 +119,14 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     }
   }
 
+  private loadCategories() {
+    this.categoriesService.getAll().subscribe(
+      categories => this.categories = categories
+    );
+  }
+
   private setPageTitle() {
-    if(this.currentAction === Actions.new) {
+    if (this.currentAction === Actions.new) {
       this.pageTitle = 'Cadastrio de novo lançamento';
     } else {
       const entryNome = this.entries.nome || '';
@@ -114,7 +136,6 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
 
   private createEntry() {
     const entry: Entry = Object.assign(new Entry(), this.entryForm.value);
-
     this.entryService.create(entry).subscribe(
       entry => this.actionsForSuccess(entry),
       error => this.actionsForError(error)
@@ -132,7 +153,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
 
   private actionsForSuccess(entry: Entry) {
     this.toastr.success('Solicitação processaada com sucesso!');
-    this.router.navigateByUrl('lancamentos', {skipLocationChange:true}).then(
+    this.router.navigateByUrl('lancamentos', { skipLocationChange: true }).then(
       () => this.router.navigate(['lancamentos', entry.id, 'edit'])
     )
   }
@@ -141,7 +162,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     this.toastr.error('Ocorreu um erro ao processar a sua solicitação!');
     this.submittingForm = false;
 
-    if(error.status === 422){
+    if (error.status === 422) {
       this.serverErrorMessage = JSON.parse(error._body).errors;
     } else {
       this.serverErrorMessage = ['Erro no servidor, tente mais tarde'];

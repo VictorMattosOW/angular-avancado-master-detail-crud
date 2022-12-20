@@ -16,9 +16,11 @@ export class EntryListaComponent implements OnInit {
   ngOnInit(): void {
     this.entryService.getAll().subscribe(
       (entries: Entry[]) => {
-        this.entries = entries;
+        this.entries = entries.sort((a ,b) => b.id! - a.id!)
       },
-      (error: any) => alert("deu erro")
+      (error: any) => {
+        alert("deu erro")
+      }
     );
   }
 

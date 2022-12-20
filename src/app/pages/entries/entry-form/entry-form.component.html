@@ -1,7 +1,7 @@
 <nav class="mb-5">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item"><a routerLink="/lancamentos">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/lancamentos">Lançamentos</a></li>
         <li class="breadcrumb-item active">{{pageTitle}}</li>
     </ol>
 </nav>
@@ -31,9 +31,8 @@
                 <!-- tipo -->
                 <div class="form-group col-md-2 me-3">
                     <label for="tipo">Tipo</label>
-                    <select name="tipo" id="tipo" formControlName="tipo" class="form-control">
-                        <option value="expense">Despesa</option>
-                        <option value="revenue">Receita</option>
+                    <select name="tipo" id="tipo" formControlName="tipo" class="form-select">
+                        <option *ngFor="let option of typesOptions" [value]="option.value">{{ option.text }}</option>
                     </select>
                     <div class="text-danger" *ngIf="entryForm.get('tipo')?.invalid && entryForm.get('tipo')?.touched">
                         <div *ngIf="entryForm.get('tipo')?.errors?.['required']">dado obrigatorio</div>
@@ -43,7 +42,7 @@
                 <div class="form-group col-md-4 me-3">
                     <label for="nome">Lançamento</label>
                     <input type="text" class="form-control" id="nome" formControlName="nome">
-                    
+
                     <div class="text-danger" *ngIf="entryForm.get('nome')?.invalid && entryForm.get('nome')?.touched">
                         <div *ngIf="entryForm.get('nome')?.errors?.['required']">dado obrigatorio</div>
                         <div *ngIf="entryForm.get('nome')?.errors?.['minlength']">deve ter no minimo 2 caracteres</div>
@@ -56,7 +55,8 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text">R$</div>
                         </div>
-                        <input [imask]="imaskConfig" type="text" class="form-control text-end" id="valor" formControlName="valor">
+                        <input [imask]="imaskConfig" type="text" class="form-control text-end" id="valor"
+                            formControlName="valor">
                     </div>
                     <div class="text-danger" *ngIf="entryForm.get('valor')?.invalid && entryForm.get('valor')?.touched">
                         <div *ngIf="entryForm.get('valor')?.errors?.['required']">dado obrigatorio</div>
@@ -65,15 +65,8 @@
                 <!-- data -->
                 <div class="form-group col-md-2">
                     <label for="nome">Data</label>
-                    <p-calendar
-                        id="data"
-                        formControlName="data"
-                        inputStyleClass="form-control"
-                        dataType="string"
-                        dateFormat="dd/mm/yy"
-                        [locale]="ptBR"
-                        [showButtonBar]="true"
-                    ></p-calendar>
+                    <p-calendar id="data" formControlName="data" inputStyleClass="form-control" dataType="string"
+                        dateFormat="dd/mm/yy" [locale]="ptBR" [showButtonBar]="true"></p-calendar>
 
                     <div class="text-danger" *ngIf="entryForm.get('data')?.invalid && entryForm.get('data')?.touched">
                         <div *ngIf="entryForm.get('data')?.errors?.['required']">dado obrigatorio</div>
@@ -86,12 +79,16 @@
                 <div class="form-group col-md-2">
                     <label for="pago">--Pago--</label>
                     <div class="btn-group" role="group">
-                        <input [checked]="entryForm.get('pago')?.value === true" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                        <label (click)="entryForm.get('pago')?.setValue(true)" class="btn btn-outline-primary" for="btnradio1">Pago</label>
-                      
-                        <input [checked]="entryForm.get('pago')?.value === false" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                        <label (click)="entryForm.get('pago')?.setValue(false)" class="btn btn-outline-primary" for="btnradio2">Pendente</label>
-                      </div>
+                        <input [checked]="entryForm.get('pago')?.value === true" type="radio" class="btn-check"
+                            name="btnradio" id="btnradio1" autocomplete="off">
+                        <label (click)="entryForm.get('pago')?.setValue(true)" class="btn btn-outline-primary"
+                            for="btnradio1">Pago</label>
+
+                        <input [checked]="entryForm.get('pago')?.value === false" type="radio" class="btn-check"
+                            name="btnradio" id="btnradio2" autocomplete="off">
+                        <label (click)="entryForm.get('pago')?.setValue(false)" class="btn btn-outline-primary"
+                            for="btnradio2">Pendente</label>
+                    </div>
 
                     <div class="text-danger" *ngIf="entryForm.get('pago')?.invalid && entryForm.get('pago')?.touched">
                         <div *ngIf="entryForm.get('pago')?.errors?.['required']">dado obrigatorio</div>
@@ -101,11 +98,11 @@
                 <!-- categoriaId -->
                 <div class="form-group col-md-3 me-3">
                     <label for="categoriaId">Categoria</label>
-                    <select name="categoriaId" id="categoriaId" formControlName="categoriaId" class="form-control">
-                        <option value="1">Categoria 1</option>
-                        <option value="2">Categoria 2</option>
+                    <select name="categoriaId" id="categoriaId" formControlName="categoriaId" class="form-select">
+                        <option *ngFor="let category of categories" value="{{category.id}}">{{category.nome}}</option>
                     </select>
-                    <div class="text-danger" *ngIf="entryForm.get('categoriaId')?.invalid && entryForm.get('categoriaId')?.touched">
+                    <div class="text-danger"
+                        *ngIf="entryForm.get('categoriaId')?.invalid && entryForm.get('categoriaId')?.touched">
                         <div *ngIf="entryForm.get('categoriaId')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
@@ -126,6 +123,9 @@
         </ul>
     </div>
 
-    <button [disabled]="submittingForm || entryForm.invalid" type="submit" class="btn btn-primary btn-lg mt-3 float-end">Salvar</button>
+    <button [disabled]="submittingForm || entryForm.invalid" type="submit"
+        class="btn btn-primary btn-lg mt-3 float-end">Salvar</button>
 
 </form>
+
+<pre>{{ entryForm.value | json }}</pre>
