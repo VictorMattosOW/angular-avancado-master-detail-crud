@@ -14,7 +14,7 @@ export abstract class BaseResourceService<T extends BaseResourceModel> {
     getAll(): Observable<T[]> {
         return this.http.get(this.apiPath).pipe(
             catchError(this.handleError),
-            map(this.jsonDataToResourcesArray)
+            map(this.jsonDataToResources)
         )
     }
 
@@ -23,14 +23,14 @@ export abstract class BaseResourceService<T extends BaseResourceModel> {
 
         return this.http.get(url).pipe(
             catchError(this.handleError),
-            map(this.jsonDataToResources)
+            map(this.jsonDataToResource)
         );
     }
 
     create(resource: T): Observable<T> {
         return this.http.post(this.apiPath, resource).pipe(
             catchError(this.handleError),
-            map(this.jsonDataToResources)
+            map(this.jsonDataToResource)
         );
     }
 
@@ -53,13 +53,13 @@ export abstract class BaseResourceService<T extends BaseResourceModel> {
     }
 
 
-    protected jsonDataToResourcesArray(jsonData: any[]): T[] {
+    protected jsonDataToResources(jsonData: any[]): T[] {
         const resources: T[] = [];
         jsonData.forEach(element => resources.push(element as T));
         return resources;
     }
 
-    protected jsonDataToResources(jsonData: any): T {
+    protected jsonDataToResource(jsonData: any): T {
         return jsonData as T;
     }
 

@@ -13,7 +13,7 @@ export class Entry extends BaseResourceModel {
         public categoria?: Categoria
     ){ super ()}
 
-    static types = {
+    static readonly types = {
         expense: 'Despesa',
         revenue: 'Receita'
     }
