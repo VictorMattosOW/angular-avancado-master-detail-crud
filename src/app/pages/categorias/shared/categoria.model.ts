@@ -6,4 +6,8 @@ export class Categoria extends BaseResourceModel {
         public nome?: string,
         public descricao?: string
     ) { super() }
+
+    static fromJson(jsonData: any): Categoria {
+        return Object.assign(new Categoria(), jsonData);
+    }
 }

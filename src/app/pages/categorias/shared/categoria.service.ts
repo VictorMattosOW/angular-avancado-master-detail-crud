@@ -9,7 +9,6 @@ import { Injector } from '@angular/core';
 export class CategoriaService extends BaseResourceService<Categoria> {
 
   constructor(protected override injector: Injector) { 
-    super("api/categorias", injector);
+    super("api/categorias", injector, Categoria.fromJson);
   }
-
 }
