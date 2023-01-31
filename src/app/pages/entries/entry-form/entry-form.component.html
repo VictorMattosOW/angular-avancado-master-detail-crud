@@ -32,7 +32,7 @@
                 <div class="form-group col-md-2 me-3">
                     <label for="tipo">Tipo</label>
                     <select name="tipo" id="tipo" formControlName="tipo" class="form-select">
-                        <option *ngFor="let option of typesOptions" [value]="option.value">{{ option.text }}</option>
+                        <option *ngFor="let option of typesOptions" [ngValue]="option.value">{{ option.text }}</option>
                     </select>
                     <div class="text-danger" *ngIf="entryForm.get('tipo')?.invalid && entryForm.get('tipo')?.touched">
                         <div *ngIf="entryForm.get('tipo')?.errors?.['required']">dado obrigatorio</div>
