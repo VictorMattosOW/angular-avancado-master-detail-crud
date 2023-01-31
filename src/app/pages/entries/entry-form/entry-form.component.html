@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<form [formGroup]="entryForm" (ngSubmit)="submitForm()">
+<form [formGroup]="resourceForm" (ngSubmit)="submitForm()">
 
     <div class="card">
         <div class="card-header">
@@ -34,8 +34,8 @@
                     <select name="tipo" id="tipo" formControlName="tipo" class="form-select">
                         <option *ngFor="let option of typesOptions" [ngValue]="option.value">{{ option.text }}</option>
                     </select>
-                    <div class="text-danger" *ngIf="entryForm.get('tipo')?.invalid && entryForm.get('tipo')?.touched">
-                        <div *ngIf="entryForm.get('tipo')?.errors?.['required']">dado obrigatorio</div>
+                    <div class="text-danger" *ngIf="resourceForm.get('tipo')?.invalid && resourceForm.get('tipo')?.touched">
+                        <div *ngIf="resourceForm.get('tipo')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
                 <!-- nome -->
@@ -43,9 +43,9 @@
                     <label for="nome">Lançamento</label>
                     <input type="text" class="form-control" id="nome" formControlName="nome">
 
-                    <div class="text-danger" *ngIf="entryForm.get('nome')?.invalid && entryForm.get('nome')?.touched">
-                        <div *ngIf="entryForm.get('nome')?.errors?.['required']">dado obrigatorio</div>
-                        <div *ngIf="entryForm.get('nome')?.errors?.['minlength']">deve ter no minimo 2 caracteres</div>
+                    <div class="text-danger" *ngIf="resourceForm.get('nome')?.invalid && resourceForm.get('nome')?.touched">
+                        <div *ngIf="resourceForm.get('nome')?.errors?.['required']">dado obrigatorio</div>
+                        <div *ngIf="resourceForm.get('nome')?.errors?.['minlength']">deve ter no minimo 2 caracteres</div>
                     </div>
                 </div>
                 <!-- valor -->
@@ -58,8 +58,8 @@
                         <input [imask]="imaskConfig" type="text" class="form-control text-end" id="valor"
                             formControlName="valor">
                     </div>
-                    <div class="text-danger" *ngIf="entryForm.get('valor')?.invalid && entryForm.get('valor')?.touched">
-                        <div *ngIf="entryForm.get('valor')?.errors?.['required']">dado obrigatorio</div>
+                    <div class="text-danger" *ngIf="resourceForm.get('valor')?.invalid && resourceForm.get('valor')?.touched">
+                        <div *ngIf="resourceForm.get('valor')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
                 <!-- data -->
@@ -68,8 +68,8 @@
                     <p-calendar id="data" formControlName="data" inputStyleClass="form-control" dataType="string"
                         dateFormat="dd/mm/yy" [locale]="ptBR" [showButtonBar]="true"></p-calendar>
 
-                    <div class="text-danger" *ngIf="entryForm.get('data')?.invalid && entryForm.get('data')?.touched">
-                        <div *ngIf="entryForm.get('data')?.errors?.['required']">dado obrigatorio</div>
+                    <div class="text-danger" *ngIf="resourceForm.get('data')?.invalid && resourceForm.get('data')?.touched">
+                        <div *ngIf="resourceForm.get('data')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
             </div>
@@ -79,19 +79,19 @@
                 <div class="form-group col-md-2">
                     <label for="pago">--Pago--</label>
                     <div class="btn-group" role="group">
-                        <input [checked]="entryForm.get('pago')?.value === true" type="radio" class="btn-check"
+                        <input [checked]="resourceForm.get('pago')?.value === true" type="radio" class="btn-check"
                             name="btnradio" id="btnradio1" autocomplete="off">
-                        <label (click)="entryForm.get('pago')?.setValue(true)" class="btn btn-outline-primary"
+                        <label (click)="resourceForm.get('pago')?.setValue(true)" class="btn btn-outline-primary"
                             for="btnradio1">Pago</label>
 
-                        <input [checked]="entryForm.get('pago')?.value === false" type="radio" class="btn-check"
+                        <input [checked]="resourceForm.get('pago')?.value === false" type="radio" class="btn-check"
                             name="btnradio" id="btnradio2" autocomplete="off">
-                        <label (click)="entryForm.get('pago')?.setValue(false)" class="btn btn-outline-primary"
+                        <label (click)="resourceForm.get('pago')?.setValue(false)" class="btn btn-outline-primary"
                             for="btnradio2">Pendente</label>
                     </div>
 
-                    <div class="text-danger" *ngIf="entryForm.get('pago')?.invalid && entryForm.get('pago')?.touched">
-                        <div *ngIf="entryForm.get('pago')?.errors?.['required']">dado obrigatorio</div>
+                    <div class="text-danger" *ngIf="resourceForm.get('pago')?.invalid && resourceForm.get('pago')?.touched">
+                        <div *ngIf="resourceForm.get('pago')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
 
@@ -102,8 +102,8 @@
                         <option *ngFor="let category of categories" value="{{category.id}}">{{category.nome}}</option>
                     </select>
                     <div class="text-danger"
-                        *ngIf="entryForm.get('categoriaId')?.invalid && entryForm.get('categoriaId')?.touched">
-                        <div *ngIf="entryForm.get('categoriaId')?.errors?.['required']">dado obrigatorio</div>
+                        *ngIf="resourceForm.get('categoriaId')?.invalid && resourceForm.get('categoriaId')?.touched">
+                        <div *ngIf="resourceForm.get('categoriaId')?.errors?.['required']">dado obrigatorio</div>
                     </div>
                 </div>
 
@@ -123,9 +123,7 @@
         </ul>
     </div>
 
-    <button [disabled]="submittingForm || entryForm.invalid" type="submit"
+    <button [disabled]="submittingForm || resourceForm.invalid" type="submit"
         class="btn btn-primary btn-lg mt-3 float-end">Salvar</button>
 
 </form>
-
-<pre>{{ entryForm.value | json }}</pre>

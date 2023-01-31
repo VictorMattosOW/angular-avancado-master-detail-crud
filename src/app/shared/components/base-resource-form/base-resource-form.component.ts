@@ -8,11 +8,13 @@ import { switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Actions } from 'src/app/pages/categorias/shared/action.model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export abstract class BaseResourceFormComponent<T extends BaseResourceModel> implements OnInit, AfterContentChecked {
 
     currentAction: string = '';
-    resourceForm: FormGroup;
+    resourceForm!: FormGroup;
     pageTitle: string = '';
     serverErrorMessage: string[] = null;
     submittingForm = false;
@@ -20,17 +22,18 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     protected route: ActivatedRoute;
     protected router: Router;
     protected formBuilder: FormBuilder;
+    private toastr: ToastrService;
 
     constructor(
         protected Injector: Injector,
         public resource: T,
-        private toastr: ToastrService,
-        protected jsonDataToResourceFn: (jsonData: Function) => T,
-        protected resourceService: BaseResourceService<T>
+        protected resourceService: BaseResourceService<T>,
+        protected jsonDataToResourceFn: (jsonData) => T
     ) {
         this.route = this.Injector.get(ActivatedRoute);
         this.router = this.Injector.get(Router);
         this.formBuilder = this.Injector.get(FormBuilder);
+        this.toastr = this.Injector.get(ToastrService);
     }
 
     ngOnInit(): void {
@@ -59,13 +62,17 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
 
     protected loadResource() {
         if (this.currentAction === Actions.edit) {
+            console.log("loadResource");
+            
             this.route.paramMap.pipe(
                 switchMap((params) => this.resourceService.getById(Number(params.get('id'))))
             ).subscribe({
                 next: (resource) => {
                     this.resource = resource;
+                    this.resourceForm.patchValue(resource);
                 },
                 error: (error) => {
+                    console.error(error)
                     alert('deu erro no servidor');
                 }
             })
@@ -90,7 +97,7 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
 
     protected createResource() {
         const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
-
+        
         this.resourceService.create(resource).subscribe({
             next: (resource) => {
                 this.actionsForSuccess(resource)
@@ -102,8 +109,9 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     }
 
     protected updateResource() {
+        
         const resource: T = this.jsonDataToResourceFn(this.resourceForm.value);
-
+        
         this.resourceService.update(resource).subscribe({
             next: (resource) => {
                 this.actionsForSuccess(resource)
@@ -117,6 +125,7 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     protected actionsForSuccess(resource: T) {
         this.toastr.success('Solicitação processaada com sucesso!');
         const baseComponentPath = this.route.snapshot.parent.url[0].path;
+
         this.router.navigateByUrl(baseComponentPath, { skipLocationChange: true }).then(
             () => this.router.navigate([baseComponentPath, resource.id, 'edit'])
         )
