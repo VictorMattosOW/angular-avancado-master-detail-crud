@@ -2,17 +2,12 @@
     [items]="[{text: 'Categorias', link: '/categorias'}, {text: pageTitle}]"
 ></app-bread-crumb>
 
-<div class="row mb-4">
-    <div class="col-md">
-        <h1 class="h2 border-start ps-2">
-            {{pageTitle}}
-        </h1>
-    </div>
-    <div class="col-md d-flex align-items-center justify-content-end">
-        <a routerLink="/categorias" class="btn btn-light">
-            < Voltar </a>
-    </div>
-</div>
+<app-page-header 
+    [page-title]="pageTitle"
+    button-text="< Voltar"
+    button-class="btn-light"
+    button-link="/categorias"
+></app-page-header>
 
 <form [formGroup]="resourceForm" (ngSubmit)="submitForm()">
 
