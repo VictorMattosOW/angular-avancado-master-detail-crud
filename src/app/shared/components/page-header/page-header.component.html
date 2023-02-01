@@ -4,7 +4,7 @@
             {{pageTitle}}
         </h1>
     </div>
-    <div class="col-md d-flex align-items-center justify-content-end">
+    <div *ngIf="showButton" class="col-md d-flex align-items-center justify-content-end">
         <a [routerLink]="buttonLink" class="btn" [ngClass]="buttonClass">
             {{buttonText}}</a>
     </div>
