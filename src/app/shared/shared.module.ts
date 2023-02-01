@@ -16,7 +16,8 @@ import { BreadCrumbComponent } from './components/bread-crumb/bread-crumb.compon
   exports: [
     ReactiveFormsModule,
     CommonModule,
-    BreadCrumbComponent
+    BreadCrumbComponent,
+    RouterModule
   ]
 })
 export class SharedModule { }
