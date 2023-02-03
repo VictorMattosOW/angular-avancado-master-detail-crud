@@ -59,6 +59,7 @@ export class ReportsComponent implements OnInit {
   }
 
   private setValues(entries: Entry[]) {
+    
     this.entries = entries;
     this.calculateBalance();
     this.setChartData();
@@ -95,7 +96,6 @@ export class ReportsComponent implements OnInit {
 
       if (filteredEntries.length > 0) {
         const totalAmount = filteredEntries.reduce((total, entry) => total + currencyFormatter.unformat(entry.valor, { code: 'BRL' }), 0);
-
         chartData.push({
           categoryName: category.nome,
           totalAmount: totalAmount
